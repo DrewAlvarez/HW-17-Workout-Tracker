@@ -3,9 +3,7 @@ let mongoose = require("mongoose");
 
 module.exports = function(app){
     app.post("/api/workouts", function({ body }, res){
-        const workout = new db.Workout(body)
-        workout.setTotalDuration();
-        db.Workout.create(workout)
+        db.Workout.create(body)
         .then(function(dbWorkout){
             res.json(dbWorkout);
         })
@@ -44,7 +42,7 @@ module.exports = function(app){
     });
 
     app.get("/api/workouts/range", function (req, res) {
-        db.Workout.find({}).limit(10).then(data => res.json(data)
+        db.Workout.find({}).sort({ day: -1}).limit(10).then(data => res.json(data)
         ).catch(err => {
             res.status(400).json(err);
         });
