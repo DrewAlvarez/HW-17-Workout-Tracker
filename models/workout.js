@@ -39,12 +39,15 @@ let workoutSchema = new Schema(
 });
 
 workoutSchema.methods.setTotalDuration = function() {
-    let sum = 0;
-    for(var i = 0; i < this.exercises.length; i++){
-        sum += this.exercises[i].duration;
-        return sum;
-    }
-    this.totalDuration = sum;
+    this.totalDuration = this.exercises.reduce(function(total, currentValue){
+        return total + currentValue.duration;
+    }, 0);
+    // let sum = 0;
+    // for(var i = 0; i < this.exercises.length; i++){
+    //     sum += this.exercises[i].duration;
+    //     return sum;
+    // }
+    // this.totalDuration = sum;
     // this.exercises.foreach(function(item){sum += item.duration});
     return this.totalDuration;
 }
