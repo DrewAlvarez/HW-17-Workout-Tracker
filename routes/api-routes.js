@@ -3,7 +3,9 @@ let mongoose = require("mongoose");
 
 module.exports = function(app){
     app.post("/api/workouts", function({ body }, res){
-        db.Workout.create(body)
+        const workout = new db.Workout(body)
+        workout.setTotalDuration();
+        db.Workout.create(workout)
         .then(function(dbWorkout){
             res.json(dbWorkout);
         })
@@ -22,18 +24,21 @@ module.exports = function(app){
         });        
     });
 
-    // app.put("/api/workouts/:id", function({ params }, res){
-    //     db.Workout.updateOne({
-    //         _id: mongojs.ObjectId(params.id)
-    //     },
-    //     {
-    //         complete: params.complete
-    //     })
-    //     .then(function(dbWorkout){
-    //         res.json(dbWorkout);
-    //     })
-    //     .catch(function(err){
-    //         res.status(400).json(err);
-    //     }); 
-    // });
+    app.put("/api/workouts/:id", function(req, res){
+        db.Workout.findOneAndUpdate({
+            _id: req.params.id
+        },
+        {
+            $push: {exercises: req.body}
+        },
+        {
+            new: true
+        })
+        .then(function(dbWorkout){
+            res.json(dbWorkout);
+        })
+        .catch(function(err){
+            res.status(400).json(err);
+        }); 
+    });
 }

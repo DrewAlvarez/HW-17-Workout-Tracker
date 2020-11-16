@@ -6,7 +6,7 @@ let workoutSchema = new Schema(
     {
         day: {
             type: Date,
-            deafult: Date.now
+            default: Date.now
         },
         exercises: [
             {
@@ -34,8 +34,20 @@ let workoutSchema = new Schema(
                     type: Number
                 }
             }
-        ]
+        ],
+        totalDuration: Number
 });
+
+workoutSchema.methods.setTotalDuration = function() {
+    let sum = 0;
+    for(var i = 0; i < this.exercises.length; i++){
+        sum += this.exercises[i].duration;
+        return sum;
+    }
+    this.totalDuration = sum;
+    // this.exercises.foreach(function(item){sum += item.duration});
+    return this.totalDuration;
+}
 
 const Workout = mongoose.model("Workout", workoutSchema);
 module.exports = Workout;
